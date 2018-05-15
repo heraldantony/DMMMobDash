@@ -17,7 +17,6 @@ import {
   Alert
 } from "react-native";
 
-import { AreaChart, Grid } from "../../charts";
 import MultiLineChart from '../../charts/MultiLineChart'
 import * as shape from "d3-shape";
 import SocketService from "../../utils/socket.api";
