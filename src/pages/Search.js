@@ -25,7 +25,6 @@ class Search extends Component {
 			query: null
 		};
 
-		this._viewMovie = this._viewMovie.bind(this);
 		this._handleTextInput = this._handleTextInput.bind(this);
 		this.props.navigator.setOnNavigatorEvent(this._onNavigatorEvent.bind(this));
 	}
@@ -37,15 +36,6 @@ class Search extends Component {
 
 		setTimeout(() => {
 			if (query.length) {
-				this.props.actions.retrieveMoviesSearchResults(this.state.query, 1)
-				.then(() => {
-					const ds = new ListView.DataSource({ rowHasChanged: (row1, row2) => row1 !== row2 });
-					const dataSource = ds.cloneWithRows(this.props.searchResults.results);
-					this.setState({
-						dataSource,
-						isLoading: false
-					});
-				});
 			}
 		}, 500);
 	}
@@ -63,39 +53,7 @@ class Search extends Component {
 			} else {
 				page = this.state.currentPage + 1;
 			}
-/*
-			axios.get(`${TMDB_URL}/search/movie/?api_key=${TMDB_API_KEY}&query=${this.state.query}&page=${page}`)
-				.then(res => {
-					const data = this.state.searchResults.results;
-					const newData = res.data.results;
-
-					newData.map((item, index) => data.push(item));
-
-					this.setState({
-						dataSource: this.state.dataSource.cloneWithRows(this.state.searchResults.results)
-					});
-				}).catch(err => {
-					console.log('next page', err); // eslint-disable-line
-				}); */
-		}
-	}
-
-	_viewMovie(movieId) {
-		this.props.navigator.push({
-			screen: 'movieapp.Movie',
-			passProps: {
-				movieId
-			},
-			backButtonHidden: true,
-			navigatorButtons: {
-				rightButtons: [
-					{
-						id: 'close',
-						icon: iconsMap['ios-arrow-round-down']
-					}
-				]
-			}
-		});
+                 }
 	}
 
 	_onNavigatorEvent(event) {
@@ -104,26 +62,6 @@ class Search extends Component {
 				this.props.navigator.dismissModal();
 			}
 		}
-	}
-
-	_renderListView() {
-		let listView;
-		if (this.state.query) {
-			listView = (
-				<ListView
-					enableEmptySections
-					onEndReached={type => this._retrieveNextPage()}
-					onEndReachedThreshold={1200}
-					dataSource={this.state.dataSource}
-					renderRow={rowData => <CardThree info={rowData} viewMovie={this._viewMovie} />}
-					renderSeparator={(sectionId, rowId) => <View key={rowId} style={styles.seperator} />}
-				/>
-			);
-		} else {
-			listView = <View />;
-		}
-
-		return listView;
 	}
 
 	render() {
@@ -141,7 +79,6 @@ class Search extends Component {
 						/>
 					</View>
 				</View>
-				{ !this.state.isLoading && this._renderListView() }
 			</View>
 
 		);
